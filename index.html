@@ -795,7 +795,7 @@
             const photoNumber = index + 1;
             const card = document.createElement('figure');
             card.className = 'photo-card';
-            card.innerHTML = `<img src="/asset/carrousel/${photoNumber}.jpg" alt="Jersey project ${photoNumber}" loading="lazy"><span>Project ${String(photoNumber).padStart(2, '0')}</span>`;
+            card.innerHTML = `<img src="./asset/${photoNumber}.jpg" alt="Jersey project ${photoNumber}" loading="lazy"><span>Project ${String(photoNumber).padStart(2, '0')}</span>`;
             return card;
         });
         photoTrack.style.animationDuration = `${totalCarouselPhotos * 7}s`;
