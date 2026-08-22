@@ -463,7 +463,13 @@
             position: relative;
             flex: 0 0 auto;
             overflow: hidden;
-            background: #222
+            background: #222;
+            cursor: pointer
+        }
+
+        .photo-card:focus-visible {
+            outline: 3px solid var(--acid);
+            outline-offset: 5px
         }
 
         .photo-card img {
@@ -478,6 +484,117 @@
         .photo-card:hover img {
             transform: scale(1.035);
             filter: saturate(1) contrast(1.03)
+        }
+
+        .project-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: none;
+            place-items: center;
+            padding: 24px;
+            background: #000c;
+            backdrop-filter: blur(8px)
+        }
+
+        .project-modal.open {
+            display: grid
+        }
+
+        .modal-panel {
+            width: min(620px, 100%);
+            max-height: min(760px, 90vh);
+            overflow: hidden;
+            background: var(--paper);
+            color: var(--ink);
+            box-shadow: 0 30px 90px #000a;
+            animation: modalIn .28s ease both
+        }
+
+        .modal-visual {
+            min-height: 540px;
+            background: #20201d;
+            overflow: hidden
+        }
+
+        .modal-visual img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover
+        }
+
+        .modal-copy {
+            position: relative;
+            padding: clamp(34px, 5vw, 68px);
+            min-height: 440px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 42px;
+            height: 42px;
+            border: 1px solid #aaa79f;
+            background: transparent;
+            color: var(--ink);
+            font-size: 22px;
+            line-height: 1;
+            cursor: pointer
+        }
+
+        .modal-kicker {
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--acid)
+        }
+
+        .modal-copy h3 {
+            margin: 18px 0 22px;
+            font-size: clamp(40px, 5vw, 72px);
+            line-height: .85;
+            letter-spacing: -.07em
+        }
+
+        .modal-copy>p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7
+        }
+
+        .modal-meta {
+            margin-top: 34px;
+            padding-top: 18px;
+            border-top: 1px solid #bbb8af;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px
+        }
+
+        .modal-meta small {
+            display: block;
+            margin-bottom: 5px;
+            color: #777;
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase
+        }
+
+        .modal-meta strong {
+            font-size: 12px
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(18px) scale(.98) }
+            to { opacity: 1; transform: translateY(0) scale(1) }
         }
 
         .photo-card span {
@@ -658,6 +775,30 @@
                 width: 72vw
             }
 
+            .project-modal {
+                padding: 14px
+            }
+
+            .modal-panel {
+                grid-template-columns: 1fr;
+                max-height: 92vh;
+                overflow-y: auto
+            }
+
+            .modal-visual {
+                min-height: 0;
+                height: 43vh
+            }
+
+            .modal-copy {
+                padding: 34px 24px 30px
+            }
+
+            .modal-copy h3 {
+                font-size: 46px;
+                padding-right: 34px
+            }
+
             .benefits {
                 grid-template-columns: 1fr
             }
@@ -763,17 +904,32 @@
             </div>
             <div class="photo-marquee" aria-label="Galeri foto berjalan">
                 <div class="photo-track">
-                    <figure class="photo-card"><img src="carousel-1.jpg" alt="Custom jersey karya David"><span>Custom Jersey</span></figure>
-                    <figure class="photo-card"><img src="carousel-2.jpg" alt="Detail jersey karya David"><span>Premium Detail</span></figure>
-                    <figure class="photo-card"><img src="carousel-3.jpg" alt="Jersey komunitas karya David"><span>Community Kit</span></figure>
-                    <figure class="photo-card"><img src="carousel-4.jpg" alt="Foto campaign jersey David"><span>Campaign</span></figure>
-                    <figure class="photo-card" aria-hidden="true"><img src="carousel-1.jpg" alt=""><span>Custom Jersey</span></figure>
-                    <figure class="photo-card" aria-hidden="true"><img src="carousel-2.jpg" alt=""><span>Premium Detail</span></figure>
-                    <figure class="photo-card" aria-hidden="true"><img src="carousel-3.jpg" alt=""><span>Community Kit</span></figure>
-                    <figure class="photo-card" aria-hidden="true"><img src="carousel-4.jpg" alt=""><span>Campaign</span></figure>
+                    <figure class="photo-card" role="button" tabindex="0" data-title="Custom Team Jersey" data-category="Custom Jersey" data-client="Team Project" data-year="2026" data-material="Dry-fit Premium" data-description="Jersey custom dengan identitas visual khusus, dirancang untuk memberikan tampilan tim yang solid dan profesional."><img src="carousel-1.jpg" alt="Custom jersey karya David"><span>Custom Jersey</span></figure>
+                    <figure class="photo-card" role="button" tabindex="0" data-title="Premium Jersey Detail" data-category="Premium Detail" data-client="Apparel Project" data-year="2026" data-material="Dry-fit Milano" data-description="Detail produksi jersey dengan material premium, warna tajam, dan finishing rapi untuk kenyamanan saat digunakan."><img src="carousel-2.jpg" alt="Detail jersey karya David"><span>Premium Detail</span></figure>
+                    <figure class="photo-card" role="button" tabindex="0" data-title="Community Team Kit" data-category="Community Kit" data-client="Community Project" data-year="2026" data-material="Dry-fit Emboss" data-description="Jersey komunitas yang menggabungkan karakter kelompok, kenyamanan, dan visual yang mudah dikenali."><img src="carousel-3.jpg" alt="Jersey komunitas karya David"><span>Community Kit</span></figure>
+                    <figure class="photo-card" role="button" tabindex="0" data-title="Jersey Campaign" data-category="Campaign" data-client="Campaign Project" data-year="2026" data-material="Performance Fabric" data-description="Visual campaign untuk memperlihatkan jersey dalam suasana yang lebih hidup, autentik, dan dekat dengan penggunanya."><img src="carousel-4.jpg" alt="Foto campaign jersey David"><span>Campaign</span></figure>
+                    <figure class="photo-card" role="button" tabindex="-1" aria-hidden="true" data-title="Custom Team Jersey" data-category="Custom Jersey" data-client="Team Project" data-year="2026" data-material="Dry-fit Premium" data-description="Jersey custom dengan identitas visual khusus, dirancang untuk memberikan tampilan tim yang solid dan profesional."><img src="carousel-1.jpg" alt=""><span>Custom Jersey</span></figure>
+                    <figure class="photo-card" role="button" tabindex="-1" aria-hidden="true" data-title="Premium Jersey Detail" data-category="Premium Detail" data-client="Apparel Project" data-year="2026" data-material="Dry-fit Milano" data-description="Detail produksi jersey dengan material premium, warna tajam, dan finishing rapi untuk kenyamanan saat digunakan."><img src="carousel-2.jpg" alt=""><span>Premium Detail</span></figure>
+                    <figure class="photo-card" role="button" tabindex="-1" aria-hidden="true" data-title="Community Team Kit" data-category="Community Kit" data-client="Community Project" data-year="2026" data-material="Dry-fit Emboss" data-description="Jersey komunitas yang menggabungkan karakter kelompok, kenyamanan, dan visual yang mudah dikenali."><img src="carousel-3.jpg" alt=""><span>Community Kit</span></figure>
+                    <figure class="photo-card" role="button" tabindex="-1" aria-hidden="true" data-title="Jersey Campaign" data-category="Campaign" data-client="Campaign Project" data-year="2026" data-material="Performance Fabric" data-description="Visual campaign untuk memperlihatkan jersey dalam suasana yang lebih hidup, autentik, dan dekat dengan penggunanya."><img src="carousel-4.jpg" alt=""><span>Campaign</span></figure>
                 </div>
             </div>
         </section>
+        <div class="project-modal" id="project-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+            <article class="modal-panel">
+                <div class="modal-copy">
+                    <button class="modal-close" type="button" aria-label="Tutup detail project">×</button>
+                    <span class="modal-kicker" id="modal-category">Selected Project</span>
+                    <h3 id="modal-title">Project Title</h3>
+                    <p id="modal-description"></p>
+                    <div class="modal-meta">
+                        <div><small>Project</small><strong id="modal-client"></strong></div>
+                        <div><small>Year</small><strong id="modal-year"></strong></div>
+                        <div><small>Material</small><strong id="modal-material"></strong></div>
+                    </div>
+                </div>
+            </article>
+        </div>
         <section class="benefits wrap">
             <article><small>01</small>
                 <h3>PREMIUM MATERIAL</h3>
@@ -802,6 +958,45 @@
         function show(index) { current = index; slides.forEach((s, i) => s.classList.toggle('active', i === index)); dots.forEach((d, i) => d.classList.toggle('active', i === index)) }
         function autoplay() { clearInterval(timer); timer = setInterval(() => show((current + 1) % slides.length), 2600) }
         dots.forEach((dot, i) => dot.addEventListener('click', () => { show(i); autoplay() })); autoplay();
+
+        const modal = document.querySelector('#project-modal');
+        const modalClose = modal.querySelector('.modal-close');
+        const projectCards = [...document.querySelectorAll('.photo-card')];
+        let lastFocusedCard;
+
+        function openProject(card) {
+            lastFocusedCard = card;
+            modal.querySelector('#modal-category').textContent = card.dataset.category;
+            modal.querySelector('#modal-title').textContent = card.dataset.title;
+            modal.querySelector('#modal-description').textContent = card.dataset.description;
+            modal.querySelector('#modal-client').textContent = card.dataset.client;
+            modal.querySelector('#modal-year').textContent = card.dataset.year;
+            modal.querySelector('#modal-material').textContent = card.dataset.material;
+            modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            modalClose.focus();
+        }
+
+        function closeProject() {
+            modal.classList.remove('open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            if (lastFocusedCard && lastFocusedCard.getAttribute('aria-hidden') !== 'true') lastFocusedCard.focus();
+        }
+
+        projectCards.forEach(card => {
+            card.addEventListener('click', () => openProject(card));
+            card.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openProject(card);
+                }
+            });
+        });
+        modalClose.addEventListener('click', closeProject);
+        modal.addEventListener('click', event => { if (event.target === modal) closeProject() });
+        document.addEventListener('keydown', event => { if (event.key === 'Escape' && modal.classList.contains('open')) closeProject() });
     </script>
 </body>
 
