@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Stage Merch — koleksi jersey band premium. Wear The Sound.">
-    <title>Stage Merch — Wear The Sound</title>
+    <title>febryanable</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         :root {
@@ -611,7 +611,8 @@
 
             .hero {
                 grid-template-columns: 1fr;
-                padding-left: 22px
+                padding-left: 22px;
+                min-height: auto
             }
 
             .hero-copy {
@@ -623,8 +624,19 @@
             }
 
             .showcase {
-                min-height: 560px;
-                margin-left: -22px
+                width: calc(100% + 22px);
+                min-height: 0;
+                height: auto;
+                margin-left: -22px;
+                overflow: hidden
+            }
+
+            .showcase>img {
+                width: 100%;
+                height: auto;
+                display: block;
+                object-fit: contain;
+                object-position: center
             }
 
             .heading {
