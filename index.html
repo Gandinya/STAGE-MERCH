@@ -760,7 +760,7 @@
             </div>
             <!-- <a class="link" href="#story">Discover our story ↓</a> -->
             <div class="showcase" aria-label="Urutan tampilan jersey">
-                <img src="./asset/49.jpg" alt="">
+                <img src="./asset/49.jpeg" alt="Jersey custom Febryanable" fetchpriority="high">
             </div>
         </section>
         <div class="ticker">
@@ -807,7 +807,7 @@
             const photoTrack = document.querySelector('.photo-track');
             if (!photoTrack) return;
 
-            // Foto: ./asset/1.jpg sampai ./asset/59.jpg.
+            // Foto nomor 1 sampai 59 di ./asset/ bisa berupa .jpg atau .jpeg.
             // Ubah jumlah ini kalau nanti menambahkan foto lagi.
             const totalCarouselPhotos = 59;
             const photoNumbers = Array.from(
@@ -842,15 +842,23 @@
                 img.loading = 'lazy';
                 img.decoding = 'async';
 
-                // Lewati foto yang gagal dimuat pada kedua salinan loop.
+                // Beberapa foto memakai .jpeg; coba keduanya sebelum dilewati.
+                const extensions = ['jpg', 'jpeg'];
+                let extensionIndex = 0;
                 img.addEventListener('error', () => {
+                    extensionIndex++;
+                    if (extensionIndex < extensions.length) {
+                        img.src = './asset/' + photoNumber + '.' + extensions[extensionIndex];
+                        return;
+                    }
+
                     const cards = cardsByNumber.get(photoNumber);
                     if (!cards) return;
                     cards.forEach(item => item.remove());
                     cardsByNumber.delete(photoNumber);
                     updateDuration();
-                }, { once: true });
-                img.src = './asset/' + photoNumber + '.jpg';
+                });
+                img.src = './asset/' + photoNumber + '.' + extensions[extensionIndex];
 
                 const label = document.createElement('span');
                 label.style.color = 'white';
@@ -878,3 +886,4 @@
 </body>
 
 </html>
+
