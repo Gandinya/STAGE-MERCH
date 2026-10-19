@@ -447,9 +447,10 @@
         }
 
         .photo-track {
+            --photo-gap: 18px;
             display: flex;
             width: max-content;
-            gap: 18px;
+            gap: var(--photo-gap);
             animation: photoLoop 30s linear infinite;
             will-change: transform
         }
@@ -459,6 +460,7 @@
         }
 
         .photo-card {
+            margin: 0;
             width: clamp(250px, 29vw, 440px);
             aspect-ratio: 4 / 5;
             position: relative;
@@ -496,7 +498,7 @@
 
         @keyframes photoLoop {
             to {
-                transform: translateX(calc(-50% - 9px))
+                transform: translateX(calc(-50% - var(--photo-gap) / 2))
             }
         }
 
@@ -663,8 +665,7 @@
             }
 
             .photo-track {
-                gap: 12px;
-                animation-duration: 22s
+                --photo-gap: 12px
             }
 
             .photo-card {
@@ -759,7 +760,7 @@
             </div>
             <!-- <a class="link" href="#story">Discover our story ↓</a> -->
             <div class="showcase" aria-label="Urutan tampilan jersey">
-                <img src="/asset/49.jpg" alt="">
+                <img src="./asset/49.jpg" alt="">
             </div>
         </section>
         <div class="ticker">
@@ -802,34 +803,76 @@
                 · <a href="https://wa.link/235328">Watsapp</a></span></div>
     </footer>
     <script>
-        const photoTrack = document.querySelector('.photo-track');
-        const totalCarouselPhotos = 58;
-        const originalPhotos = Array.from({ length: totalCarouselPhotos }, (_, index) => {
-            const photoNumber = index + 1;
-            const card = document.createElement('figure');
-            card.className = 'photo-card';
-            card.innerHTML = `<img src="./asset/${photoNumber}.jpg" alt="Jersey project ${photoNumber}" loading="lazy"><span style="color:white;">Project ${String(photoNumber).padStart(2, '0')}</span>`;
-            return card;
-        });
-        photoTrack.style.animationDuration = `${totalCarouselPhotos * 7}s`;
+        (() => {
+            const photoTrack = document.querySelector('.photo-track');
+            if (!photoTrack) return;
 
-        for (let i = originalPhotos.length - 1; i > 0; i--) {
-            const randomIndex = Math.floor(Math.random() * (i + 1));
-            [originalPhotos[i], originalPhotos[randomIndex]] = [originalPhotos[randomIndex], originalPhotos[i]];
-        }
+            // Foto: ./asset/1.jpg sampai ./asset/59.jpg.
+            // Ubah jumlah ini kalau nanti menambahkan foto lagi.
+            const totalCarouselPhotos = 59;
+            const photoNumbers = Array.from(
+                { length: totalCarouselPhotos },
+                (_, index) => index + 1
+            );
 
-        originalPhotos.forEach(photo => photoTrack.appendChild(photo));
-        originalPhotos.forEach(photo => {
-            const clone = photo.cloneNode(true);
-            clone.setAttribute('aria-hidden', 'true');
-            clone.querySelector('img').alt = '';
-            photoTrack.appendChild(clone);
-        });
+            // Acak sekali setiap halaman dibuka atau di-refresh.
+            // Setiap foto muncul satu kali dalam satu putaran.
+            for (let i = photoNumbers.length - 1; i > 0; i--) {
+                const randomIndex = Math.floor(Math.random() * (i + 1));
+                [photoNumbers[i], photoNumbers[randomIndex]] =
+                    [photoNumbers[randomIndex], photoNumbers[i]];
+            }
 
-        const slides = [...document.querySelectorAll('.slide')], dots = [...document.querySelectorAll('.dot')]; let current = 0, timer;
-        function show(index) { current = index; slides.forEach((s, i) => s.classList.toggle('active', i === index)); dots.forEach((d, i) => d.classList.toggle('active', i === index)) }
-        function autoplay() { clearInterval(timer); timer = setInterval(() => show((current + 1) % slides.length), 2600) }
-        dots.forEach((dot, i) => dot.addEventListener('click', () => { show(i); autoplay() })); autoplay();
+            const cardsByNumber = new Map();
+            const fragment = document.createDocumentFragment();
+
+            function updateDuration() {
+                photoTrack.style.animationDuration =
+                    Math.max(cardsByNumber.size, 1) * 7 + 's';
+            }
+
+            function createCard(photoNumber, isClone) {
+                const card = document.createElement('figure');
+                card.className = 'photo-card';
+                card.dataset.photo = String(photoNumber);
+                if (isClone) card.setAttribute('aria-hidden', 'true');
+
+                const img = document.createElement('img');
+                img.alt = isClone ? '' : 'Jersey project ' + photoNumber;
+                img.loading = 'lazy';
+                img.decoding = 'async';
+
+                // Lewati foto yang gagal dimuat pada kedua salinan loop.
+                img.addEventListener('error', () => {
+                    const cards = cardsByNumber.get(photoNumber);
+                    if (!cards) return;
+                    cards.forEach(item => item.remove());
+                    cardsByNumber.delete(photoNumber);
+                    updateDuration();
+                }, { once: true });
+                img.src = './asset/' + photoNumber + '.jpg';
+
+                const label = document.createElement('span');
+                label.style.color = 'white';
+                label.textContent = 'Project ' + String(photoNumber).padStart(2, '0');
+
+                card.append(img, label);
+                return card;
+            }
+
+            // Kedua salinan memakai urutan acak yang sama agar loop menyambung.
+            photoNumbers.forEach(number => cardsByNumber.set(number, []));
+            for (let copy = 0; copy < 2; copy++) {
+                photoNumbers.forEach(number => {
+                    const card = createCard(number, copy === 1);
+                    cardsByNumber.get(number).push(card);
+                    fragment.appendChild(card);
+                });
+            }
+
+            photoTrack.replaceChildren(fragment);
+            updateDuration();
+        })();
 
     </script>
 </body>
